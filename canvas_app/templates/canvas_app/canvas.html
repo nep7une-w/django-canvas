@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interactive Canvas</title>
+    <link rel="stylesheet" href="{% static 'canvas_app/canvas.css' %}" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="toolbar">
+        <h1>Canvas Playground</h1>
+        <p>Experiment with drawing, erasing, filling and exporting your artwork.</p>
+        <div class="input-row">
+          <label for="color">Color</label>
+          <input id="color" type="color" value="#4299e1" />
+        </div>
+        <div class="input-row">
+          <label for="size">Brush size</label>
+          <input id="size" type="range" min="1" max="40" value="6" />
+        </div>
+        <div class="input-row">
+          <label>Tool</label>
+        </div>
+        <div>
+          <button data-tool="draw">Pen</button>
+          <button data-tool="erase" class="secondary">Eraser</button>
+          <button id="fill" class="secondary">Fill canvas</button>
+        </div>
+        <button id="clear" class="secondary">Clear canvas</button>
+        <button id="download">Download PNG</button>
+        <p class="status" id="status">Ready</p>
+      </aside>
+      <section class="canvas-wrapper">
+        <canvas id="canvas" width="1280" height="720" aria-label="Drawing canvas"></canvas>
+      </section>
+    </div>
+    <script src="{% static 'canvas_app/canvas.js' %}"></script>
+  </body>
+</html>
