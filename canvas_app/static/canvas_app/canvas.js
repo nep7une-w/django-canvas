@@ -7,10 +7,12 @@ const downloadBtn = document.getElementById("download");
 const fillBtn = document.getElementById("fill");
 const toolButtons = document.querySelectorAll("[data-tool]");
 const statusEl = document.getElementById("status");
+const aspectSelect = document.getElementById("aspect");
 
 let drawing = false;
 let currentTool = "draw";
 let lastPoint = null;
+const maxDimension = 1280;
 
 const setStatus = (message) => {
   if (statusEl) {
@@ -25,6 +27,27 @@ const setTool = (tool) => {
   });
   const verb = tool === "draw" ? "Drawing" : tool === "erase" ? "Erasing" : "Fill";
   setStatus(`${verb} mode active`);
+};
+
+const parseRatio = (value) => {
+  const [w, h] = value.split(":").map((part) => Number(part));
+  return { w, h };
+};
+
+const resizeCanvas = (ratioValue) => {
+  const { w, h } = parseRatio(ratioValue);
+  if (!w || !h) {
+    return;
+  }
+  if (h > w) {
+    canvas.height = maxDimension;
+    canvas.width = Math.round((maxDimension * w) / h);
+  } else {
+    canvas.width = maxDimension;
+    canvas.height = Math.round((maxDimension * h) / w);
+  }
+  clearCanvas();
+  setStatus(`Canvas resized to ${w}:${h}`);
 };
 
 const startDraw = (event) => {
@@ -105,6 +128,10 @@ toolButtons.forEach((button) => {
   });
 });
 
+aspectSelect?.addEventListener("change", (event) => {
+  resizeCanvas(event.target.value);
+});
+
 canvas.addEventListener("mousedown", startDraw);
 canvas.addEventListener("mouseup", stopDraw);
 canvas.addEventListener("mouseleave", stopDraw);
@@ -125,3 +152,6 @@ canvas.addEventListener("touchmove", (event) => {
 
 clearCanvas();
 setTool("draw");
+if (aspectSelect) {
+  resizeCanvas(aspectSelect.value);
+}
