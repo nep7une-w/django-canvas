@@ -55,6 +55,11 @@ body {
   padding: 1.5rem;
 }
 
+.canvas-stack {
+  position: relative;
+  display: inline-block;
+}
+
 canvas {
   border: 2px solid #2d3748;
   border-radius: 12px;
@@ -63,6 +68,14 @@ canvas {
   touch-action: none;
   max-width: 100%;
   height: auto;
+}
+
+#preview {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: transparent;
+  pointer-events: none;
 }
 
 .input-row {

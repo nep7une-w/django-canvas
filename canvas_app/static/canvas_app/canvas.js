@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const preview = document.getElementById("preview");
+const previewCtx = preview?.getContext("2d");
 const colorInput = document.getElementById("color");
 const sizeInput = document.getElementById("size");
 const textInput = document.getElementById("text");
@@ -32,6 +34,9 @@ const setTool = (tool) => {
   if (textControls) {
     textControls.classList.toggle("is-hidden", tool !== "text");
   }
+  if (tool !== "text") {
+    clearPreview();
+  }
   const verb =
     tool === "draw"
       ? "Drawing"
@@ -59,6 +64,10 @@ const resizeCanvas = (ratioValue) => {
   } else {
     canvas.width = maxDimension;
     canvas.height = Math.round((maxDimension * h) / w);
+  }
+  if (preview) {
+    preview.width = canvas.width;
+    preview.height = canvas.height;
   }
   clearCanvas();
   setStatus(`Canvas resized to ${w}:${h}`);
@@ -113,6 +122,14 @@ const fillCanvas = () => {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 
+const clearPreview = () => {
+  if (previewCtx) {
+    previewCtx.clearRect(0, 0, preview.width, preview.height);
+  }
+};
+
+const hasTextContent = () => textInput?.value?.trim().length;
+
 const placeText = (point) => {
   const content = textInput?.value?.trim();
   if (!content) {
@@ -124,6 +141,7 @@ const placeText = (point) => {
   ctx.font = `${fontSize}px \"Segoe UI\", system-ui, sans-serif`;
   ctx.textBaseline = "top";
   ctx.fillText(content, point.x, point.y);
+  clearPreview();
   setStatus("Text placed");
 };
 
@@ -161,6 +179,15 @@ toolButtons.forEach((button) => {
   });
 });
 
+textInput?.addEventListener("input", () => {
+  if (!hasTextContent()) {
+    clearPreview();
+  }
+});
+
+fontSizeInput?.addEventListener("input", clearPreview);
+fontColorInput?.addEventListener("input", clearPreview);
+
 aspectSelect?.addEventListener("change", (event) => {
   resizeCanvas(event.target.value);
 });
@@ -169,6 +196,24 @@ canvas.addEventListener("mousedown", startDraw);
 canvas.addEventListener("mouseup", stopDraw);
 canvas.addEventListener("mouseleave", stopDraw);
 canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mousemove", (event) => {
+  if (currentTool !== "text" || !hasTextContent()) {
+    clearPreview();
+    return;
+  }
+  if (!previewCtx) {
+    return;
+  }
+  const point = getPosition(event);
+  previewCtx.clearRect(0, 0, preview.width, preview.height);
+  const fontSize = Number(fontSizeInput?.value || 32);
+  previewCtx.fillStyle = fontColorInput?.value || "#1a202c";
+  previewCtx.font = `${fontSize}px \"Segoe UI\", system-ui, sans-serif`;
+  previewCtx.textBaseline = "top";
+  previewCtx.globalAlpha = 0.6;
+  previewCtx.fillText(textInput.value.trim(), point.x, point.y);
+  previewCtx.globalAlpha = 1;
+});
 
 canvas.addEventListener("touchstart", (event) => {
   event.preventDefault();
@@ -182,6 +227,7 @@ canvas.addEventListener("touchmove", (event) => {
   event.preventDefault();
   draw(event);
 });
+canvas.addEventListener("mouseleave", clearPreview);
 
 clearCanvas();
 setTool("draw");
