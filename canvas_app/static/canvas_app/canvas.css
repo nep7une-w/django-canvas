@@ -99,6 +99,10 @@ canvas {
   color: #edf2f7;
 }
 
+.is-hidden {
+  display: none;
+}
+
 .status {
   margin-top: 1rem;
   font-size: 0.9rem;

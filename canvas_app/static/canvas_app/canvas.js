@@ -11,6 +11,7 @@ const fillBtn = document.getElementById("fill");
 const toolButtons = document.querySelectorAll("[data-tool]");
 const statusEl = document.getElementById("status");
 const aspectSelect = document.getElementById("aspect");
+const textControls = document.getElementById("text-controls");
 
 let drawing = false;
 let currentTool = "draw";
@@ -28,6 +29,9 @@ const setTool = (tool) => {
   toolButtons.forEach((btn) => {
     btn.disabled = btn.dataset.tool === tool;
   });
+  if (textControls) {
+    textControls.classList.toggle("is-hidden", tool !== "text");
+  }
   const verb =
     tool === "draw"
       ? "Drawing"
