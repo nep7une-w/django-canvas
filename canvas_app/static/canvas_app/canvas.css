@@ -81,6 +81,15 @@ canvas {
   flex: 2;
 }
 
+.input-row input[type="text"] {
+  flex: 2;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background: #1a202c;
+  color: #edf2f7;
+}
+
 .input-row select {
   flex: 2;
   padding: 0.35rem 0.5rem;

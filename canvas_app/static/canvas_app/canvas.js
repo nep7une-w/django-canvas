@@ -2,6 +2,9 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const colorInput = document.getElementById("color");
 const sizeInput = document.getElementById("size");
+const textInput = document.getElementById("text");
+const fontSizeInput = document.getElementById("font-size");
+const fontColorInput = document.getElementById("font-color");
 const clearBtn = document.getElementById("clear");
 const downloadBtn = document.getElementById("download");
 const fillBtn = document.getElementById("fill");
@@ -25,7 +28,14 @@ const setTool = (tool) => {
   toolButtons.forEach((btn) => {
     btn.disabled = btn.dataset.tool === tool;
   });
-  const verb = tool === "draw" ? "Drawing" : tool === "erase" ? "Erasing" : "Fill";
+  const verb =
+    tool === "draw"
+      ? "Drawing"
+      : tool === "erase"
+      ? "Erasing"
+      : tool === "text"
+      ? "Text"
+      : "Fill";
   setStatus(`${verb} mode active`);
 };
 
@@ -55,6 +65,11 @@ const startDraw = (event) => {
   lastPoint = getPosition(event);
   if (currentTool === "fill") {
     fillCanvas();
+    drawing = false;
+    return;
+  }
+  if (currentTool === "text") {
+    placeText(lastPoint);
     drawing = false;
     return;
   }
@@ -92,6 +107,20 @@ const getPosition = (event) => {
 const fillCanvas = () => {
   ctx.fillStyle = colorInput.value;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+const placeText = (point) => {
+  const content = textInput?.value?.trim();
+  if (!content) {
+    setStatus("Enter text before placing it");
+    return;
+  }
+  const fontSize = Number(fontSizeInput?.value || 32);
+  ctx.fillStyle = fontColorInput?.value || "#1a202c";
+  ctx.font = `${fontSize}px \"Segoe UI\", system-ui, sans-serif`;
+  ctx.textBaseline = "top";
+  ctx.fillText(content, point.x, point.y);
+  setStatus("Text placed");
 };
 
 const clearCanvas = () => {
