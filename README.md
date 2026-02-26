@@ -29,6 +29,19 @@ python manage.py runserver
 
 Visit http://127.0.0.1:8000/ to use the canvas app. The toolbar lets you pick a color, brush width, toggle between tools, clear the canvas, fill it, or download your drawing as a PNG.
 
+## Run tests
+
+The project includes Django test coverage for the home canvas page in `canvas_app/tests.py`, including:
+
+- Home route returns HTTP 200 and renders `canvas_app/canvas.html`
+- Canvas controls are present (aspect ratio selector, text tool button, hidden text settings container, and preview canvas)
+
+Run all tests with:
+
+```bash
+python manage.py test
+```
+
 ## Project structure
 
 ```
